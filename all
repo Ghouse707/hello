@@ -1,0 +1,546 @@
+import numpy as np
+
+# Input data
+x = np.array([[2,9],
+              [1,5],
+              [3,6]], dtype=float)
+
+# Output data
+y = np.array([[92],
+              [86],
+              [89]], dtype=float)
+
+# Normalize values
+x = x / np.max(x, axis=0)
+y = y / 100
+
+# Sigmoid function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Derivative of sigmoid
+def derivative_sigmoid(x):
+    return x * (1 - x)
+
+# Random weights
+wh = np.random.rand(2,3)
+wout = np.random.rand(3,1)
+
+# Training
+for i in range(5000):
+
+    # Forward propagation
+    hidden = sigmoid(np.dot(x, wh))
+    output = sigmoid(np.dot(hidden, wout))
+
+    # Error
+    EO = y - output
+
+    # Backpropagation
+    d_output = EO * derivative_sigmoid(output)
+    d_hidden = d_output.dot(wout.T) * derivative_sigmoid(hidden)
+
+    # Update weights
+    wout += hidden.T.dot(d_output) * 0.1
+    wh += x.T.dot(d_hidden) * 0.1
+
+    # Print loss every 1000 epochs
+    if i % 1000 == 0:
+        mse = np.mean(np.square(y - output))
+        print(f"Epoch {i}, Loss: {mse}")
+
+# Final result
+print("Final Output:")
+print(output)
+
+
+
+
+
+2nd 
+import numpy as np
+
+# Step function
+def step_function(x):
+    if x >= 0:
+        return 1
+    else:
+        return 0
+
+# Training data for AND gate
+X = np.array([[0,0],
+              [0,1],
+              [1,0],
+              [1,1]])
+
+y = np.array([0,0,0,1])
+
+# Initialize weights and bias
+weights = np.zeros(2)
+bias = 0
+learning_rate = 0.1
+
+# Training
+for epoch in range(10):
+
+    for i in range(len(X)):
+
+        # Calculate output
+        summation = np.dot(X[i], weights) + bias
+        prediction = step_function(summation)
+
+        # Calculate error
+        error = y[i] - prediction
+
+        # Update weights and bias
+        weights = weights + learning_rate * error * X[i]
+        bias = bias + learning_rate * error
+
+    print(f"Epoch {epoch+1}: weights={weights}, bias={bias}")
+
+print("Training finished")
+
+# Testing
+for test in X:
+    summation = np.dot(test, weights) + bias
+    prediction = step_function(summation)
+
+    print(f"Input: {test} -> Prediction: {prediction}")
+
+
+
+3rd
+from kmodes.kmodes import KModes
+import pandas as pd
+
+# Create dataset
+data = {
+    'Color': ['Red', 'Blue', 'Red', 'Blue', 'Red'],
+    'Size': ['S', 'M', 'M', 'S', 'S'],
+    'Shape': ['Circle', 'Square', 'Circle', 'Square', 'Circle']
+}
+
+# Convert into dataframe
+df = pd.DataFrame(data)
+
+# Print dataset
+print("Dataset:")
+print(df)
+
+# Create K-Modes model
+model_kmodes = KModes(n_clusters=2, init='Huang', n_init=5)
+
+# Train model and get cluster labels
+cluster_labels = model_kmodes.fit_predict(df)
+
+# Print cluster labels
+print("\nCluster Labels assigned to data points:")
+print(cluster_labels)
+
+# Print cluster centroids
+print("\nCluster Centroids (Modes):")
+print(model_kmodes.cluster_centroids_)
+
+# Add cluster labels to dataframe
+df['Cluster'] = cluster_labels
+
+# Print final dataset
+print("\nDataset with Cluster Assignments:")
+print(df)
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.cluster import KMeans
+import pandas as pd
+
+# Load iris dataset
+iris = datasets.load_iris()
+
+# Create dataframe
+X = pd.DataFrame(iris.data)
+X.columns = ['Sepal length', 'Sepal width',
+             'Petal length', 'Petal width']
+
+# Target values
+y = pd.DataFrame(iris.target)
+y.columns = ['Targets']
+
+# Create KMeans model
+model = KMeans(n_clusters=3)
+
+# Train model
+model.fit(X)
+
+# Create graph window
+plt.figure(figsize=(14,7))
+
+# Colors
+colormap = np.array(['red', 'lime', 'black'])
+
+# Real clusters
+plt.subplot(1,2,1)
+plt.scatter(X['Petal length'],
+            X['Petal width'],
+            c=colormap[y['Targets']],
+            s=40)
+
+plt.title('Real Clusters')
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
+
+# Predicted clusters
+plt.subplot(1,2,2)
+plt.scatter(X['Petal length'],
+            X['Petal width'],
+            c=colormap[model.labels_],
+            s=40)
+
+plt.title('K Means Clustering')
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
+
+plt.tight_layout()
+plt.show()
+
+# Print cluster centers
+print(model.cluster_centers_)
+
+
+
+
+4
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+
+# Load Iris dataset
+iris = datasets.load_iris()
+X = iris.data
+
+# Standardize the dataset
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Create DBSCAN model
+model = DBSCAN(eps=0.5, min_samples=5)
+
+# Train model
+labels = model.fit_predict(X_scaled)
+
+# Count clusters
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+
+# Plot clusters
+plt.figure(figsize=(8,6))
+
+plt.scatter(X_scaled[:,0],
+            X_scaled[:,1],
+            c=labels,
+            cmap='rainbow',
+            s=50)
+
+plt.title("DBSCAN Clustering Result")
+plt.xlabel("Sepal Length")
+plt.ylabel("Sepal Width")
+
+plt.grid(True)
+plt.show()
+
+# Print results
+print("Cluster Labels:")
+print(labels)
+
+print("\nEstimated number of clusters:", n_clusters)
+print("Estimated number of noise points:", np.sum(labels == -1))
+
+
+5th
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn.cluster import AgglomerativeClustering
+
+# Load Iris dataset
+iris = datasets.load_iris()
+X = iris.data
+
+# Create linkage matrix
+Z = linkage(X, method='ward')
+
+# Draw dendrogram
+plt.figure(figsize=(10,7))
+
+dendrogram(Z)
+
+plt.title("Hierarchical Clustering Dendrogram")
+plt.xlabel("Data Points")
+plt.ylabel("Distance")
+
+plt.show()
+
+# Create Agglomerative model
+model = AgglomerativeClustering(
+    n_clusters=3,
+    linkage='ward'
+)
+
+# Train model
+labels = model.fit_predict(X)
+
+# Plot clusters
+plt.figure(figsize=(10,7))
+
+plt.scatter(X[:,0],
+            X[:,1],
+            c=labels,
+            cmap='rainbow',
+            s=50)
+
+plt.title("Agglomerative Clustering Result")
+plt.xlabel("Sepal Length")
+plt.ylabel("Sepal Width")
+
+plt.show()
+
+# Print labels
+print("Assigned Cluster Labels:")
+print(labels)
+
+
+
+
+6th
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import svm, datasets
+
+# Load Iris dataset
+iris = datasets.load_iris()
+
+# Take first two features
+X = iris.data[:, :2]
+y = iris.target
+
+# Create SVM model
+model = svm.SVC(kernel='linear', C=1.0)
+
+# Train model
+model.fit(X, y)
+
+# Create meshgrid
+x_min = X[:,0].min() - 1
+x_max = X[:,0].max() + 1
+
+y_min = X[:,1].min() - 1
+y_max = X[:,1].max() + 1
+
+xx, yy = np.meshgrid(
+    np.arange(x_min, x_max, 0.02),
+    np.arange(y_min, y_max, 0.02)
+)
+
+# Predict values
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+
+Z = Z.reshape(xx.shape)
+
+# Plot decision boundary
+plt.figure(figsize=(8,6))
+
+plt.contourf(xx, yy, Z, alpha=0.8)
+
+# Plot data points
+plt.scatter(X[:,0],
+            X[:,1],
+            c=y,
+            edgecolors='k')
+
+plt.xlabel("Sepal Length")
+plt.ylabel("Sepal Width")
+
+plt.title("SVM on Iris Dataset")
+
+plt.show()
+
+
+7th
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.svm import SVR
+
+# Generate sample data
+X = np.linspace(0, 10, 100)
+y = np.sin(X)
+
+# Convert X into 2D array
+X = X.reshape(-1, 1)
+
+# Create SVR models
+linear_model = SVR(kernel='linear', C=1000, epsilon=0.1)
+rbf_model = SVR(kernel='rbf', C=1000, epsilon=0.1)
+
+# Train models
+linear_model.fit(X, y)
+rbf_model.fit(X, y)
+
+# Predict outputs
+y_linear = linear_model.predict(X)
+y_rbf = rbf_model.predict(X)
+
+# Plot Linear Kernel
+plt.figure(figsize=(8,6))
+
+plt.scatter(X, y, label='Original Data')
+plt.plot(X, y_linear, label='Linear Kernel')
+
+plt.title("SVR with Linear Kernel")
+plt.xlabel("X")
+plt.ylabel("Y")
+
+plt.legend()
+plt.grid(True)
+
+plt.show()
+
+# Plot RBF Kernel
+plt.figure(figsize=(8,6))
+
+plt.scatter(X, y, label='Original Data')
+plt.plot(X, y_rbf, label='RBF Kernel')
+
+plt.title("SVR with RBF Kernel")
+plt.xlabel("X")
+plt.ylabel("Y")
+
+plt.legend()
+plt.grid(True)
+
+plt.show()
+
+9th 
+import random
+import matplotlib.pyplot as plt
+
+# Fitness function
+def fitness(x):
+    return x * x
+
+# Initial population
+pop = [random.randint(-5, 5) for i in range(10)]
+
+# Store fitness history
+history = []
+
+# Genetic Algorithm loop
+for i in range(20):
+
+    # Sort population based on fitness
+    pop.sort(key=fitness, reverse=True)
+
+    # Store best fitness
+    history.append(fitness(pop[0]))
+
+    # Select top 5 parents
+    parents = pop[:5]
+
+    # Create new population
+    pop = parents.copy()
+
+    # Generate children
+    while len(pop) < 10:
+
+        # Select two parents
+        p1 = random.choice(parents)
+        p2 = random.choice(parents)
+
+        # Crossover operation
+        child = (p1 + p2) / 2
+
+        # Add child to population
+        pop.append(child)
+
+# Final result
+print("Best Solution =", pop[0])
+print("Best Fitness =", fitness(pop[0]))
+
+# Plot graph
+plt.plot(history)
+plt.xlabel("Generation")
+plt.ylabel("Best Fitness")
+plt.title("Genetic Algorithm Optimization")
+plt.show()
+
+
+10th 
+
+# Dataset
+dataset = [
+    {"Age": 20, "Income": 25000, "Buy": "No"},
+    {"Age": 22, "Income": 30000, "Buy": "No"},
+    {"Age": 25, "Income": 50000, "Buy": "Yes"},
+    {"Age": 28, "Income": 55000, "Buy": "Yes"},
+    {"Age": 30, "Income": 60000, "Buy": "Yes"},
+    {"Age": 35, "Income": 40000, "Buy": "No"},
+    {"Age": 40, "Income": 70000, "Buy": "Yes"},
+    {"Age": 45, "Income": 80000, "Buy": "Yes"}
+]
+
+# Learn rule
+def learn_rule(data):
+    for d in data:
+        if d["Buy"] == "Yes":
+            return lambda x: (25 <= x["Age"] <= 45) and (x["Income"] > 40000)
+
+# Test rule
+def test_rule(data, rule):
+
+    predictions = []
+    tp = fp = tn = fn = 0
+
+    for d in data:
+
+        pred = "Yes" if rule(d) else "No"
+        predictions.append(pred)
+
+        actual = d["Buy"]
+
+        if pred == "Yes" and actual == "Yes":
+            tp += 1
+        elif pred == "Yes" and actual == "No":
+            fp += 1
+        elif pred == "No" and actual == "No":
+            tn += 1
+        else:
+            fn += 1
+
+    accuracy = ((tp + tn) / len(data)) * 100
+
+    return predictions, accuracy, tp, fp, tn, fn
+
+
+# Run
+rule = learn_rule(dataset)
+
+predictions, accuracy, tp, fp, tn, fn = test_rule(dataset, rule)
+
+print("Predictions:", predictions)
+
+print("\nAccuracy:", accuracy, "%")
+
+print("\nTrue Positives:", tp)
+print("False Positives:", fp)
+print("True Negatives:", tn)
+print("False Negatives:", fn)
+print("Accuracy:", accuracy, "%")
+
