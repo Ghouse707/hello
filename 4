@@ -1,0 +1,39 @@
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from scipy.cluster.hierarchy import dendrogram, linkage
+from sklearn.cluster import AgglomerativeClustering
+
+iris = datasets.load_iris()
+
+X = iris.data
+
+Z = linkage(X, method='ward')
+
+plt.figure(figsize=(10,7))
+
+dendrogram(Z)
+
+plt.title("Hierarchical Clustering Dendrogram")
+plt.xlabel("Samples")
+plt.ylabel("Distance")
+
+plt.show()
+
+model = AgglomerativeClustering(n_clusters=3)
+
+labels = model.fit_predict(X)
+
+plt.figure(figsize=(8,6))
+
+plt.scatter(
+    X[:,0],
+    X[:,1],
+    c=labels
+)
+
+plt.title("Divisive Hierarchical Clustering")
+
+plt.xlabel("Sepal Length")
+plt.ylabel("Sepal Width")
+
+plt.show()
