@@ -1,0 +1,105 @@
+import numpy as np
+
+dataset = [
+    {"Age":22,"Income":30000,"Buy Product":"No"},
+    {"Age":25,"Income":50000,"Buy Product":"Yes"},
+    {"Age":45,"Income":80000,"Buy Product":"Yes"},
+    {"Age":35,"Income":40000,"Buy Product":"No"}
+]
+
+def satisfies_condition(example, condition):
+
+    return condition(example)
+
+def rule(dataset):
+
+    explanation = None
+
+    for example in dataset:
+
+        if example["Buy Product"] == "Yes":
+
+            age = example["Age"]
+
+            explanation = lambda x: (
+                x["Age"] >= age and
+                x["Income"] >= 40000
+            )
+
+            break
+
+    return explanation
+
+def test_explanation(dataset, explanation):
+
+    predictions = []
+
+    correct_predictions = 0
+
+    true_positives = 0
+    false_positives = 0
+    true_negatives = 0
+    false_negatives = 0
+
+    for example in dataset:
+
+        predicted = (
+            "Yes"
+            if satisfies_condition(example, explanation)
+            else "No"
+        )
+
+        predictions.append(predicted)
+
+        if predicted == example["Buy Product"]:
+
+            correct_predictions += 1
+
+            if predicted == "Yes":
+                true_positives += 1
+            else:
+                true_negatives += 1
+
+        else:
+
+            if predicted == "Yes":
+                false_positives += 1
+            else:
+                false_negatives += 1
+
+    accuracy = correct_predictions / len(dataset) * 100
+
+    return (
+        accuracy,
+        predictions,
+        true_positives,
+        false_positives,
+        true_negatives,
+        false_negatives
+    )
+
+explanation = rule(dataset)
+
+print(
+    "Learned Rule: Age >= 25 and Income >= 40000"
+)
+
+accuracy, predictions, true_positives, false_positives, true_negatives, false_negatives = test_explanation(
+    dataset,
+    explanation
+)
+
+print("\nPredictions vs Actual")
+
+for i, example in enumerate(dataset):
+
+    print(
+        f"Example {i+1}: Predicted = {predictions[i]}, Actual = {example['Buy Product']}"
+    )
+
+print("\nAccuracy =", accuracy, "%")
+
+print("True Positives =", true_positives)
+print("False Positives =", false_positives)
+print("True Negatives =", true_negatives)
+print("False Negatives =", false_negatives)
