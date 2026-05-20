@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.svm import SVR
+
+X = np.linspace(0,10,100)
+y = np.sin(X)
+
+X = X.reshape(-1,1)
+
+svr_linear = SVR(
+    kernel='linear',
+    C=1000,
+    gamma='scale',
+    epsilon=0.1
+)
+
+svr_linear.fit(X, y)
+
+svr_rbf = SVR(
+    kernel='rbf',
+    C=1000,
+    gamma='scale',
+    epsilon=0.1
+)
+
+svr_rbf.fit(X, y)
+
+y_pred_linear = svr_linear.predict(X)
+y_pred_rbf = svr_rbf.predict(X)
+
+plt.figure(figsize=(8,6))
+
+plt.scatter(X, y, label='Original Data')
+
+plt.plot(X, y_pred_linear, lw=2,
+         label='Linear Kernel')
+
+plt.title("SVR using Linear Kernel")
+
+plt.legend()
+
+plt.show()
+
+plt.figure(figsize=(8,6))
+
+plt.scatter(X, y, label='Original Data')
+
+plt.plot(X, y_pred_rbf, lw=2,
+         label='RBF Kernel')
+
+plt.title("SVR using RBF Kernel")
+
+plt.legend()
+
+plt.show()
