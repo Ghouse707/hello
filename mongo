@@ -1,0 +1,692 @@
+use college
+
+db.createCollection("students")
+
+db.students.insertOne({
+    name: "Rahul",
+    age: 20,
+    marks: 80
+})
+
+db.students.insertMany([
+{
+    name: "Ram",
+    age: 21,
+    marks: 85
+},
+{
+    name: "Amulya",
+    age: 22,
+    marks: 79
+},
+{
+    name: "Anagha",
+    age: 20,
+    marks: 90
+}
+])
+
+db.students.find({
+    age: { $gt: 20 },
+    marks: { $gt: 80 }
+})
+
+db.students.find({
+    $or: [
+        { age: 20 },
+        { marks: 79 }
+    ]
+})
+
+
+
+
+use college
+
+db.createCollection("students")
+
+db.students.insertOne({
+    name: "Rahul",
+    age: 21,
+    marks: 78,
+    dept: "CSE"
+})
+
+db.students.insertMany([
+{
+    name: "Arjun",
+    age: 20,
+    marks: 80,
+    dept: "CSE"
+},
+{
+    name: "Bhavana",
+    age: 21,
+    marks: 85,
+    dept: "AIML"
+},
+{
+    name: "Chirag",
+    age: 20,
+    marks: 82,
+    dept: "AIML"
+}
+])
+
+db.students.updateOne(
+    { name: "Rahul" },
+    { $set: { marks: 81 } }
+)
+
+db.students.find({ name: "Rahul" })
+
+db.students.deleteOne({ name: "Arjun" })
+
+db.students.deleteMany({
+    age: 20
+})
+
+
+db.students.insertMany([
+{
+    _id: 1,
+    name: "A",
+    age: 20,
+    marks: 75
+},
+{
+    _id: 2,
+    name: "B",
+    age: 20,
+    marks: 80
+}
+])
+
+db.students.find(
+{},
+{
+    name: 1,
+    age: 1,
+    marks: 1
+})
+
+db.students.find(
+{},
+{
+    dept: 0
+})
+
+
+
+
+2nd 
+
+
+
+db.employee.insertMany([
+{
+    name: "A",
+    age: 30,
+    salary: 50000
+},
+{
+    name: "B",
+    age: 25,
+    salary: 55000
+},
+{
+    name: "C",
+    age: 23,
+    salary: 60000
+},
+{
+    name: "D",
+    age: 24,
+    salary: 65000
+},
+{
+    name: "E",
+    age: 21,
+    salary: 58000
+},
+{
+    name: "F",
+    age: 23,
+    salary: 60000
+}
+])
+
+db.employee.find(
+{},
+{
+    name: 1,
+    salary: 1,
+    _id: 0
+})
+
+db.employee.find(
+{},
+{
+    name: 1,
+    salary: 1,
+    _id: 0
+}).limit(5)
+
+
+
+
+3rd
+db.students.insertMany([
+{ _id: 1, name: "Rani", age: 20, marks: 80 },
+{ _id: 2, name: "Abi", age: 20, marks: 70 },
+{ _id: 3, name: "Hema", age: 20, marks: 40 },
+{ _id: 4, name: "Ram", age: 20, marks: 75 },
+{ _id: 5, name: "Maggie", age: 20, marks: 90 }
+])
+
+db.students.find({
+    marks: { $gt: 75 }
+})
+
+db.students.find({
+    marks: { $lt: 75 }
+})
+
+db.students.find({
+    marks: { $eq: 90 }
+})
+
+db.students.find({
+    marks: { $ne: 70 }
+})
+
+db.students.find({
+    marks: { $in: [80, 90] }
+})
+
+db.students.find({
+    $and: [
+        { marks: { $gt: 80 } },
+        { age: { $lt: 25 } }
+    ]
+})
+
+db.students.find({
+    $or: [
+        { marks: { $gt: 80 } },
+        { age: { $lt: 20 } }
+    ]
+})
+
+
+
+3b 
+
+
+db.places.insertMany([
+{
+    name: "Park",
+    location: {
+        type: "Point",
+        coordinates: [77.59, 12.97]
+    }
+},
+{
+    name: "Mall",
+    location: {
+        type: "Point",
+        coordinates: [77.60, 12.98]
+    }
+},
+{
+    name: "Hospital",
+    location: {
+        type: "Point",
+        coordinates: [77.58, 13.46]
+    }
+}
+])
+
+db.places.createIndex({
+    location: "2dsphere"
+})
+
+db.places.find({
+    location: {
+        $near: {
+            $geometry: {
+                type: "Point",
+                coordinates: [77.59, 12.97]
+            },
+            $maxDistance: 5000
+        }
+    }
+})
+
+
+3c
+
+db.devices.insertMany([
+{ device: "Sensor1", status: 5 },
+{ device: "Sensor2", status: 3 },
+{ device: "Sensor3", status: 1 },
+{ device: "Sensor4", status: 4 }
+])
+
+db.devices.find({
+    status: { $bitsAllSet: [0] }
+})
+
+db.devices.find({
+    status: { $bitsAnySet: [0,1] }
+})
+
+db.devices.find({
+    status: { $bitsAllClear: [1] }
+})
+
+
+4th
+
+
+db.students.insertMany([
+{
+    _id: 1,
+    name: "Ravi",
+    marks: [
+        { subject: "Maths", score: 85 },
+        { subject: "Science", score: 90 },
+        { subject: "English", score: 75 }
+    ]
+},
+{
+    _id: 2,
+    name: "Anita",
+    marks: [
+        { subject: "Maths", score: 88 },
+        { subject: "Science", score: 90 },
+        { subject: "English", score: 80 }
+    ]
+}
+])
+
+db.students.find(
+{
+    marks: {
+        $elemMatch: {
+            subject: "Science",
+            score: 90
+        }
+    }
+},
+{
+    name: 1
+})
+
+db.orders.insertOne({
+    _id: 1,
+    items: ["Pen", "Book", "Pencil", "Eraser"]
+})
+
+db.orders.find(
+{},
+{
+    items: { $slice: 2 }
+})
+
+5th
+
+
+db.students.insertMany([
+{ name: "A", dept: "CSE", marks: 85 },
+{ name: "B", dept: "CSE", marks: 78 },
+{ name: "C", dept: "ISE", marks: 90 },
+{ name: "D", dept: "ISE", marks: 88 },
+{ name: "E", dept: "ECE", marks: 75 },
+{ name: "F", dept: "ECE", marks: 82 },
+{ name: "G", dept: "CSE", marks: 85 }
+])
+
+db.students.aggregate([
+{
+    $group: {
+        _id: "$dept",
+        avgMarks: { $avg: "$marks" }
+    }
+}
+])
+
+db.students.aggregate([
+{
+    $group: {
+        _id: "$dept",
+        minMarks: { $min: "$marks" },
+        maxMarks: { $max: "$marks" }
+    }
+}
+])
+
+db.students.aggregate([
+{
+    $group: {
+        _id: "$dept",
+        totalMarks: { $sum: "$marks" },
+        totalStudents: { $sum: 1 }
+    }
+}
+])
+
+db.students.aggregate([
+{
+    $group: {
+        _id: "$dept",
+        studentList: { $push: "$name" }
+    }
+}
+])
+
+db.students.aggregate([
+{
+    $group: {
+        _id: "$dept",
+        uniqueStudents: { $addToSet: "$name" }
+    }
+}
+])
+
+
+6th
+
+
+db.sales.insertMany([
+{
+    product: "Laptop",
+    category: "Electronics",
+    price: 60000,
+    quantity: 2,
+    city: "Bangalore"
+},
+{
+    product: "Mobile",
+    category: "Electronics",
+    price: 20000,
+    quantity: 5,
+    city: "Chennai"
+},
+{
+    product: "Shirt",
+    category: "Clothing",
+    price: 1000,
+    quantity: 10,
+    city: "Bangalore"
+}
+])
+
+db.sales.aggregate([
+{
+    $match: {
+        category: "Electronics"
+    }
+},
+{
+    $group: {
+        _id: "$city",
+        totalSales: {
+            $sum: {
+                $multiply: ["$price", "$quantity"]
+            }
+        },
+        avgPrice: { $avg: "$price" },
+        maxPrice: { $max: "$price" }
+    }
+},
+{
+    $sort: {
+        totalSales: -1
+    }
+},
+{
+    $project: {
+        _id: 0,
+        city: "$_id",
+        totalSales: 1,
+        avgPrice: 1,
+        maxPrice: 1
+    }
+}
+])
+
+
+7th
+
+
+db.ecommerce.insertMany([
+{
+    product: "Laptop",
+    reviews: [
+        { rating: 5, date: ISODate("2024-01-01") },
+        { rating: 4, date: ISODate("2024-02-15") }
+    ]
+},
+{
+    product: "Mobile",
+    reviews: [
+        { rating: 3, date: ISODate("2024-02-20") },
+        { rating: 5, date: ISODate("2024-03-01") }
+    ]
+}
+])
+
+db.ecommerce.aggregate([
+{ $unwind: "$reviews" },
+{
+    $group: {
+        _id: null,
+        totalReviews: { $sum: 1 },
+        averageRating: { $avg: "$reviews.rating" },
+        latestReview: { $max: "$reviews.date" },
+        oldestReview: { $min: "$reviews.date" }
+    }
+},
+{
+    $project: {
+        _id: 0,
+        totalReviews: 1,
+        averageRating: 1,
+        latestReview: 1,
+        oldestReview: 1
+    }
+}
+])
+
+
+8th
+
+
+db.employees.insertMany([
+{
+    name: "Alice",
+    email: "alice@gmail.com",
+    age: 30,
+    department: "HR"
+},
+{
+    name: "Bob",
+    email: "bob@gmail.com",
+    age: 25,
+    department: "IT"
+}
+])
+
+db.employees.createIndex(
+{ email: 1 },
+{ unique: true }
+)
+
+db.employees.createIndex(
+{ department: 1 },
+{ sparse: true }
+)
+
+
+8b
+
+
+db.courses.insertMany([
+{
+    name: "Course1",
+    tags: ["db", "mongodb"],
+    level: "Beginner"
+},
+{
+    name: "Course2",
+    tags: ["java", "backend"],
+    level: "Intermediate"
+},
+{
+    name: "Course3",
+    tags: ["mongodb", "advanced"],
+    level: "Advanced"
+}
+])
+
+db.courses.createIndex({
+    tags: 1,
+    level: 1
+})
+
+db.courses.find({
+    tags: "mongodb",
+    level: "Advanced"
+})
+
+
+8c
+
+db.students.insertMany([
+{
+    name: "Alice",
+    subjects: ["Math", "Science"]
+},
+{
+    name: "Bob",
+    subjects: ["English", "History"]
+},
+{
+    name: "Charlie",
+    subjects: ["Math", "English"]
+}
+])
+
+db.students.createIndex({
+    subjects: 1
+})
+
+db.students.find({
+    subjects: "Math"
+})
+
+
+9
+
+
+db.catalog.insertMany([
+{
+    title: "Data Science for Beginners",
+    description: "An introductory book on data science"
+},
+{
+    title: "Advanced ML",
+    description: "A deep dive into ML algorithms"
+},
+{
+    title: "MongoDB in Action",
+    description: "A comprehensive guide to MongoDB"
+},
+{
+    title: "Data Analytics with Python",
+    description: "Learn data analysis using Python"
+},
+{
+    title: "Introduction to Big Data",
+    description: "Basics of big data technologies"
+}
+])
+
+db.catalog.createIndex({
+    title: "text",
+    description: "text"
+})
+
+db.catalog.find({
+    $text: {
+        $search: "data"
+    }
+})
+
+
+db.catalog.aggregate([
+{
+    $match: {
+        $text: {
+            $search: "data"
+        }
+    }
+},
+{
+    $match: {
+        title: {
+            $not: /python/i
+        },
+        description: {
+            $not: /python/i
+        }
+    }
+}
+])
+
+
+10th
+
+
+db.catalog.aggregate([
+{
+    $match: {
+        $text: {
+            $search: "data"
+        }
+    }
+},
+{
+    $match: {
+        $and: [
+        {
+            title: {
+                $not: /python/i
+            }
+        },
+        {
+            description: {
+                $not: /python/i
+            }
+        }
+        ]
+    }
+},
+{
+    $project: {
+        title: 1,
+        description: 1,
+        score: {
+            $meta: "textScore"
+        }
+    }
+},
+{
+    $sort: {
+        score: {
+            $meta: "textScore"
+        }
+    }
+}
+])
